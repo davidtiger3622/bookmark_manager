@@ -44,7 +44,7 @@ export default function BookmarksPage() {
         <ThemeToggle />
       </div>
       <div className="mx-auto flex max-w-md flex-col items-center text-center">
-        <Link href="/" className="text-xl font-bold text-white">Bookmark Manager</Link>
+        <Link href="/" className="text-xl font-bold text-[var(--text)]">Bookmark Manager</Link>
         <div className="mt-6 w-full">
           <SearchBar value={query} onChange={setQuery} sort={sort} onSortChange={setSort} />
         </div>
