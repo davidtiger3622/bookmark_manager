@@ -8,6 +8,8 @@ import {
   updateBookmark,
 } from "./storage";
 
+const UUID_V4 = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 beforeEach(() => {
   window.localStorage.clear();
 });
@@ -32,7 +34,7 @@ describe("getBookmarks", () => {
 });
 
 describe("addBookmark", () => {
-  it("adds a new bookmark with generated id and createdAt", () => {
+  it("adds a new bookmark with a generated UUID id and createdAt", () => {
     const result = addBookmark("Example", "https://example.com");
     expect(result).toHaveLength(1);
     expect(result[0]).toMatchObject({
@@ -40,8 +42,14 @@ describe("addBookmark", () => {
       url: "https://example.com",
       favorite: false,
     });
-    expect(result[0].id).toBeTruthy();
+    expect(result[0].id).toMatch(UUID_V4);
     expect(typeof result[0].createdAt).toBe("number");
+  });
+
+  it("generates a distinct id for each new bookmark", () => {
+    addBookmark("First", "https://first.com");
+    const result = addBookmark("Second", "https://second.com");
+    expect(result[0].id).not.toBe(result[1].id);
   });
 
   it("appends to existing bookmarks rather than replacing them", () => {
