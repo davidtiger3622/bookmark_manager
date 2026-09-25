@@ -15,6 +15,7 @@ describe("categoryLabel", () => {
 describe("theme storage", () => {
   beforeEach(() => {
     window.localStorage.clear();
+    document.documentElement.removeAttribute("data-theme");
   });
 
   it("defaults to dark when nothing stored", async () => {
@@ -36,6 +37,22 @@ describe("theme storage", () => {
     const { getTheme } = await import("./appearance");
     expect(getTheme()).toBe("dark");
   });
+
+  it("setStoredTheme persists and sets data-theme", async () => {
+    vi.resetModules();
+    const { setStoredTheme } = await import("./appearance");
+    setStoredTheme("light");
+    expect(window.localStorage.getItem("bookmark-manager:theme")).toBe("light");
+    expect(document.documentElement.getAttribute("data-theme")).toBe("light");
+  });
+
+  it("applyStoredTheme sets data-theme from whatever is stored", async () => {
+    vi.resetModules();
+    window.localStorage.setItem("bookmark-manager:theme", "light");
+    const { applyStoredTheme } = await import("./appearance");
+    applyStoredTheme();
+    expect(document.documentElement.getAttribute("data-theme")).toBe("light");
+  });
 });
 
 describe("wallpaper storage", () => {
@@ -55,47 +72,41 @@ describe("wallpaper storage", () => {
     const { getWallpaper } = await import("./appearance");
     expect(getWallpaper()).toBe("nature/forest.jpg");
   });
+
+  it("setStoredWallpaper persists the wallpaper id", async () => {
+    vi.resetModules();
+    const { setStoredWallpaper } = await import("./appearance");
+    setStoredWallpaper("ocean/wave.jpg");
+    expect(window.localStorage.getItem("bookmark-manager:wallpaper")).toBe("ocean/wave.jpg");
+  });
 });
 
-describe("applyAppearance", () => {
+describe("getWallpaperUrl", () => {
   beforeEach(() => {
     window.localStorage.clear();
-    document.documentElement.removeAttribute("data-theme");
-    document.body.style.backgroundImage = "";
   });
 
   afterEach(() => {
     vi.unstubAllGlobals();
   });
 
-  it("sets data-theme to the stored theme", async () => {
-    vi.resetModules();
-    window.localStorage.setItem("bookmark-manager:theme", "light");
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ json: async () => ({}) }));
-    const { applyAppearance } = await import("./appearance");
-    await applyAppearance();
-    expect(document.documentElement.getAttribute("data-theme")).toBe("light");
-  });
-
-  it("clears the background image when theme is dark", async () => {
+  it("returns null when theme is dark, even with a wallpaper stored", async () => {
     vi.resetModules();
     window.localStorage.setItem("bookmark-manager:theme", "dark");
     window.localStorage.setItem("bookmark-manager:wallpaper", "nature/forest.jpg");
-    const { applyAppearance } = await import("./appearance");
-    await applyAppearance();
-    expect(document.body.style.backgroundImage).toBe("");
+    const { getWallpaperUrl } = await import("./appearance");
+    expect(await getWallpaperUrl()).toBeNull();
   });
 
-  it("clears the background image when wallpaper is 'none'", async () => {
+  it("returns null when wallpaper is 'none'", async () => {
     vi.resetModules();
     window.localStorage.setItem("bookmark-manager:theme", "light");
     window.localStorage.setItem("bookmark-manager:wallpaper", "none");
-    const { applyAppearance } = await import("./appearance");
-    await applyAppearance();
-    expect(document.body.style.backgroundImage).toBe("");
+    const { getWallpaperUrl } = await import("./appearance");
+    expect(await getWallpaperUrl()).toBeNull();
   });
 
-  it("sets the background image when theme is light and wallpaper is in the manifest", async () => {
+  it("returns the url when theme is light and wallpaper is in the manifest", async () => {
     vi.resetModules();
     window.localStorage.setItem("bookmark-manager:theme", "light");
     window.localStorage.setItem("bookmark-manager:wallpaper", "nature/forest.jpg");
@@ -103,12 +114,11 @@ describe("applyAppearance", () => {
       "fetch",
       vi.fn().mockResolvedValue({ json: async () => ({ nature: ["forest.jpg"] }) })
     );
-    const { applyAppearance } = await import("./appearance");
-    await applyAppearance();
-    expect(document.body.style.backgroundImage).toContain("/wallpapers/nature/forest.jpg");
+    const { getWallpaperUrl } = await import("./appearance");
+    expect(await getWallpaperUrl()).toBe("/wallpapers/nature/forest.jpg");
   });
 
-  it("clears the background image when the stored wallpaper is not in the manifest", async () => {
+  it("returns null when the stored wallpaper is not in the manifest", async () => {
     vi.resetModules();
     window.localStorage.setItem("bookmark-manager:theme", "light");
     window.localStorage.setItem("bookmark-manager:wallpaper", "nature/missing.jpg");
@@ -116,9 +126,8 @@ describe("applyAppearance", () => {
       "fetch",
       vi.fn().mockResolvedValue({ json: async () => ({ nature: ["forest.jpg"] }) })
     );
-    const { applyAppearance } = await import("./appearance");
-    await applyAppearance();
-    expect(document.body.style.backgroundImage).toBe("");
+    const { getWallpaperUrl } = await import("./appearance");
+    expect(await getWallpaperUrl()).toBeNull();
   });
 
   it("caches the manifest so fetch is only called once", async () => {
@@ -127,9 +136,9 @@ describe("applyAppearance", () => {
     window.localStorage.setItem("bookmark-manager:wallpaper", "nature/forest.jpg");
     const fetchMock = vi.fn().mockResolvedValue({ json: async () => ({ nature: ["forest.jpg"] }) });
     vi.stubGlobal("fetch", fetchMock);
-    const { applyAppearance } = await import("./appearance");
-    await applyAppearance();
-    await applyAppearance();
+    const { getWallpaperUrl } = await import("./appearance");
+    await getWallpaperUrl();
+    await getWallpaperUrl();
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 
@@ -138,33 +147,34 @@ describe("applyAppearance", () => {
     window.localStorage.setItem("bookmark-manager:theme", "light");
     window.localStorage.setItem("bookmark-manager:wallpaper", "nature/forest.jpg");
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("network error")));
-    const { applyAppearance } = await import("./appearance");
-    await expect(applyAppearance()).resolves.not.toThrow();
-    expect(document.body.style.backgroundImage).toBe("");
+    const { getWallpaperUrl } = await import("./appearance");
+    await expect(getWallpaperUrl()).resolves.toBeNull();
   });
 });
 
-describe("setStoredTheme / setStoredWallpaper", () => {
+describe("subscribeAppearance", () => {
   beforeEach(() => {
     window.localStorage.clear();
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ json: async () => ({}) }));
   });
 
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
-  it("persists the theme to localStorage", async () => {
+  it("notifies subscribers when the theme changes", async () => {
     vi.resetModules();
-    const { setStoredTheme } = await import("./appearance");
+    const { subscribeAppearance, setStoredTheme } = await import("./appearance");
+    const listener = vi.fn();
+    const unsubscribe = subscribeAppearance(listener);
     setStoredTheme("light");
-    expect(window.localStorage.getItem("bookmark-manager:theme")).toBe("light");
+    expect(listener).toHaveBeenCalledTimes(1);
+    unsubscribe();
+    setStoredTheme("dark");
+    expect(listener).toHaveBeenCalledTimes(1);
   });
 
-  it("persists the wallpaper id to localStorage", async () => {
+  it("notifies subscribers when the wallpaper changes", async () => {
     vi.resetModules();
-    const { setStoredWallpaper } = await import("./appearance");
-    setStoredWallpaper("ocean/wave.jpg");
-    expect(window.localStorage.getItem("bookmark-manager:wallpaper")).toBe("ocean/wave.jpg");
+    const { subscribeAppearance, setStoredWallpaper } = await import("./appearance");
+    const listener = vi.fn();
+    subscribeAppearance(listener);
+    setStoredWallpaper("cars/car1.jpg");
+    expect(listener).toHaveBeenCalledTimes(1);
   });
 });

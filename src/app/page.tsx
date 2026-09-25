@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <div
       className="flex min-h-screen w-full items-center justify-center px-6"
-      style={{ backgroundImage: "url(/wallpapers/wildlife/flamingo.jpg)", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" }}
+      style={{ backgroundImage: "url(/wallpapers/wildlife/bird.jpg)", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" }}
     >
       <div className="flex flex-col items-center rounded-3xl bg-[var(--bg-card)]/85 px-8 py-10 text-center shadow-lg backdrop-blur-md">
         <h1 className="text-5xl font-bold tracking-tight text-[var(--text)]">Bookmark Manager</h1>

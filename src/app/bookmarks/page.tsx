@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Bookmark, getBookmarks, addBookmark, toggleFavorite } from "@/lib/storage";
+import { Bookmark, getBookmarks, addBookmark, deleteBookmark, updateBookmark, toggleFavorite } from "@/lib/storage";
 import { normalizeUrl } from "@/lib/favicon";
 import { applyStoredTheme, getWallpaperUrl, subscribeAppearance } from "@/lib/appearance";
 import SearchBar from "@/components/SearchBar";
@@ -18,6 +18,7 @@ export default function BookmarksPage() {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortOption>("date");
   const [showModal, setShowModal] = useState(false);
+  const [editingBookmark, setEditingBookmark] = useState<Bookmark | null>(null);
   const [wallpaperUrl, setWallpaperUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -31,12 +32,31 @@ export default function BookmarksPage() {
     return subscribeAppearance(refreshWallpaper);
   }, []);
 
-  function handleAdd(name: string, url: string) {
-    setBookmarks(addBookmark(name, normalizeUrl(url)));
+  function handleSave(name: string, url: string) {
+    if (editingBookmark) {
+      setBookmarks(updateBookmark(editingBookmark.id, name, normalizeUrl(url)));
+      setEditingBookmark(null);
+    } else {
+      setBookmarks(addBookmark(name, normalizeUrl(url)));
+    }
+  }
+
+  function handleDelete(id: string) {
+    setBookmarks(deleteBookmark(id));
+  }
+
+  function handleEdit(bookmark: Bookmark) {
+    setEditingBookmark(bookmark);
+    setShowModal(true);
   }
 
   function handleToggleFavorite(id: string) {
     setBookmarks(toggleFavorite(id));
+  }
+
+  function closeModal() {
+    setShowModal(false);
+    setEditingBookmark(null);
   }
 
   const filtered = useMemo(() => {
@@ -72,8 +92,8 @@ export default function BookmarksPage() {
             Wallpapers show in light mode only. Dark mode overrides them.
           </p>
         </div>
-        <BookmarkGrid bookmarks={filtered} onToggleFavorite={handleToggleFavorite} />
-        {showModal && <AddBookmarkModal onAdd={handleAdd} onClose={() => setShowModal(false)} />}
+        <BookmarkGrid bookmarks={filtered} onToggleFavorite={handleToggleFavorite} onDelete={handleDelete} onEdit={handleEdit} />
+        {showModal && <AddBookmarkModal bookmark={editingBookmark} onSave={handleSave} onClose={closeModal} />}
       </main>
     </div>
   );
