@@ -30,7 +30,7 @@ describe("getFaviconUrl", () => {
     expect(getFaviconUrl("not a url")).toBe("");
   });
 
-  it("strips subdomains correctly by using the full hostname", () => {
+  it("keeps the full hostname, including subdomains", () => {
     expect(getFaviconUrl("https://sub.example.com")).toBe(
       "https://www.google.com/s2/favicons?domain=sub.example.com&sz=64"
     );
