@@ -1,10 +1,12 @@
 # Bookmark Manager
 
-🔗 **Link:** [bookmark-manager-eta-ashy.vercel.app](https://bookmark-manager-eta-ashy.vercel.app/)
-A fast, minimal bookmark manager that lives entirely in your browser. Save links, mark favorites, search, sort, switch between dark/light mode, and pick a wallpaper — no account, no backend, no database. Everything is stored in `localStorage`.
-
+[![Live Demo](https://img.shields.io/badge/demo-live-brightgreen)](https://bookmark-manager-eta-ashy.vercel.app/)
 ![CI](https://github.com/davidtiger3622/bookmark_manager/actions/workflows/ci.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+
+A fast, minimal bookmark manager that lives entirely in your browser. Save links, mark favorites, search, sort, switch between dark/light mode, and pick a wallpaper — no account, no backend, no database. Everything is stored in `localStorage`.
+
+**Live app:** https://bookmark-manager-eta-ashy.vercel.app/
 
 ## Screenshots
 
