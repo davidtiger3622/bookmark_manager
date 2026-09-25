@@ -1,8 +1,6 @@
 # Bookmark Manager
 
-- **Live demo:** https://bookmark-manager-eta-ashy.vercel.app/
-- **CI:** https://github.com/davidtiger3622/bookmark_manager/actions
-- **License:** MIT (see [LICENSE](LICENSE))
+**Live App:** https://bookmark-manager-eta-ashy.vercel.app/
 
 A fast, minimal bookmark manager that lives entirely in your browser. Save links, mark favorites, search, sort, switch between dark/light mode, and pick a wallpaper — no account, no backend, no database. Everything is stored in `localStorage`.
 
