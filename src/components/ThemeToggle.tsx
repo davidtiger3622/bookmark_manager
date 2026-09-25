@@ -20,8 +20,8 @@ export default function ThemeToggle() {
   }
 
   return (
-    <button onClick={toggle} aria-label="Toggle theme" className="text-xl leading-none text-[var(--text-dim)] transition hover:text-[var(--accent)]">
-      {theme === "dark" ? "\u263E" : "\u2600"}
+    <button onClick={toggle} className="rounded-full border border-[var(--text)] bg-[var(--bg)] px-5 py-2 text-sm font-bold text-[var(--text)]">
+      {theme === "dark" ? "Dark" : "Light"}
     </button>
   );
 }
