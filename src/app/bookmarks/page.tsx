@@ -44,7 +44,7 @@ export default function BookmarksPage() {
 
   return (
     <main className="w-full px-10 py-10">
-      <div className="mx-auto flex max-w-xl flex-col items-center text-center">
+      <div className="mx-auto flex max-w-xl flex-col items-center rounded-3xl bg-[var(--bg-card)]/85 px-6 py-5 text-center shadow-lg backdrop-blur-md">
         <Link href="/" className="text-xl font-bold text-[var(--text)]">Bookmark Manager</Link>
         <div className="mt-6 flex w-full items-center justify-center gap-3">
           <AddBookmarkButton onClick={() => setShowModal(true)} />
