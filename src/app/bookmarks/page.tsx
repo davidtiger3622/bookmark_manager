@@ -47,13 +47,13 @@ export default function BookmarksPage() {
       <div className="mx-auto flex max-w-xl flex-col items-center rounded-3xl bg-[var(--bg-card)]/85 px-4 py-5 text-center shadow-lg backdrop-blur-md sm:px-6">
         <Link href="/" className="text-xl font-bold text-[var(--text)]">Bookmark Manager</Link>
         <div className="mt-6 flex w-full flex-wrap items-center justify-center gap-3">
-          <div className="order-1 basis-full sm:order-none sm:basis-auto sm:max-w-xs sm:flex-1">
-            <SearchBar value={query} onChange={setQuery} />
-          </div>
           <AddBookmarkButton onClick={() => setShowModal(true)} />
           <SortMenu value={sort} onChange={setSort} />
           <ThemeToggle />
           <WallpaperMenu />
+        </div>
+        <div className="mt-3 w-full max-w-xs">
+          <SearchBar value={query} onChange={setQuery} />
         </div>
         <p className="mt-3 text-xs font-bold text-[var(--text-dim)]">
           Wallpapers show in light mode only. Dark mode overrides them.
