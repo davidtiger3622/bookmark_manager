@@ -5,6 +5,7 @@ import {
   getBookmarks,
   saveBookmarks,
   toggleFavorite,
+  updateBookmark,
 } from "./storage";
 
 beforeEach(() => {
@@ -67,6 +68,55 @@ describe("deleteBookmark", () => {
     addBookmark("First", "https://first.com");
     const result = deleteBookmark("nonexistent-id");
     expect(result).toHaveLength(1);
+  });
+});
+
+describe("updateBookmark", () => {
+  it("updates name and url for the matching id", () => {
+    addBookmark("First", "https://first.com");
+    const [bookmark] = getBookmarks();
+
+    const result = updateBookmark(bookmark.id, "Updated", "https://updated.com");
+
+    expect(result.find((b) => b.id === bookmark.id)).toMatchObject({
+      name: "Updated",
+      url: "https://updated.com",
+    });
+  });
+
+  it("leaves other bookmarks unaffected", () => {
+    addBookmark("First", "https://first.com");
+    addBookmark("Second", "https://second.com");
+    const [first, second] = getBookmarks();
+
+    const result = updateBookmark(first.id, "Changed", "https://changed.com");
+
+    expect(result.find((b) => b.id === second.id)).toMatchObject({
+      name: "Second",
+      url: "https://second.com",
+    });
+  });
+
+  it("is a no-op when the id does not exist", () => {
+    addBookmark("First", "https://first.com");
+    const before = getBookmarks();
+
+    const result = updateBookmark("nonexistent-id", "X", "https://x.com");
+
+    expect(result).toEqual(before);
+  });
+
+  it("preserves favorite and createdAt when updating", () => {
+    addBookmark("First", "https://first.com");
+    const [bookmark] = getBookmarks();
+    toggleFavorite(bookmark.id);
+    const favorited = getBookmarks()[0];
+
+    const result = updateBookmark(bookmark.id, "Renamed", "https://renamed.com");
+    const updated = result.find((b) => b.id === bookmark.id);
+
+    expect(updated?.favorite).toBe(true);
+    expect(updated?.createdAt).toBe(favorited.createdAt);
   });
 });
 
