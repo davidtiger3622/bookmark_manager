@@ -32,20 +32,19 @@ export default function BookmarksPage() {
     return subscribeAppearance(refreshWallpaper);
   }, []);
 
-  function handleSave(name: string, url: string) {
-    if (editingBookmark) {
-      setBookmarks(updateBookmark(editingBookmark.id, name, normalizeUrl(url)));
-      setEditingBookmark(null);
-    } else {
-      setBookmarks(addBookmark(name, normalizeUrl(url)));
-    }
+  function handleAdd(name: string, url: string) {
+    setBookmarks(addBookmark(name, normalizeUrl(url)));
+  }
+
+  function handleEditSave(id: string, name: string, url: string) {
+    setBookmarks(updateBookmark(id, name, normalizeUrl(url)));
   }
 
   function handleDelete(id: string) {
     setBookmarks(deleteBookmark(id));
   }
 
-  function handleEdit(bookmark: Bookmark) {
+  function handleEditClick(bookmark: Bookmark) {
     setEditingBookmark(bookmark);
     setShowModal(true);
   }
@@ -92,8 +91,8 @@ export default function BookmarksPage() {
             Wallpapers show in light mode only. Dark mode overrides them.
           </p>
         </div>
-        <BookmarkGrid bookmarks={filtered} onToggleFavorite={handleToggleFavorite} onDelete={handleDelete} onEdit={handleEdit} />
-        {showModal && <AddBookmarkModal bookmark={editingBookmark} onSave={handleSave} onClose={closeModal} />}
+        <BookmarkGrid bookmarks={filtered} onToggleFavorite={handleToggleFavorite} onDelete={handleDelete} onEdit={handleEditClick} />
+        {showModal && <AddBookmarkModal bookmark={editingBookmark} onAdd={handleAdd} onEdit={handleEditSave} onClose={closeModal} />}
       </main>
     </div>
   );

@@ -5,19 +5,31 @@ import type { Bookmark } from "@/lib/storage";
 
 type Props = {
   bookmark?: Bookmark | null;
-  onSave: (name: string, url: string) => void;
+  onAdd: (name: string, url: string) => void;
+  onEdit?: (id: string, name: string, url: string) => void;
   onClose: () => void;
 };
 
-export default function AddBookmarkModal({ bookmark, onSave, onClose }: Props) {
+export default function AddBookmarkModal({ bookmark, onAdd, onEdit, onClose }: Props) {
   const [name, setName] = useState(bookmark?.name ?? "");
   const [url, setUrl] = useState(bookmark?.url ?? "");
   const isEdit = !!bookmark;
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim() || !url.trim()) return;
-    onSave(name.trim(), url.trim());
+    const trimmedName = name.trim();
+    const trimmedUrl = url.trim();
+    if (!trimmedName || !trimmedUrl) return;
+
+    if (isEdit) {
+      if (onEdit) {
+        onEdit(bookmark.id, trimmedName, trimmedUrl);
+      } else {
+        onAdd(trimmedName, trimmedUrl);
+      }
+    } else {
+      onAdd(trimmedName, trimmedUrl);
+    }
     onClose();
   }
 
