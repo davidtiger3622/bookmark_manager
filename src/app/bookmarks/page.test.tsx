@@ -159,4 +159,24 @@ describe("BookmarksPage", () => {
       );
     });
   });
+
+  it("re-sorts bookmarks in reverse alphabetical order when Z-A is selected", async () => {
+    seedBookmarks([
+      makeStoredBookmark({ id: "1", name: "Alpha", url: "https://alpha.com", createdAt: 1 }),
+      makeStoredBookmark({ id: "2", name: "Zeta", url: "https://zeta.com", createdAt: 2 }),
+    ]);
+    const user = userEvent.setup();
+    const { container } = render(<BookmarksPage />);
+
+    await screen.findByText("Zeta");
+
+    await user.click(screen.getByRole("button", { name: "Sort" }));
+    await user.click(screen.getByText("Z-A"));
+
+    await waitFor(() => {
+      expect(container.textContent!.indexOf("Zeta")).toBeLessThan(
+        container.textContent!.indexOf("Alpha")
+      );
+    });
+  });
 });

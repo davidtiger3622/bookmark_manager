@@ -55,6 +55,16 @@ describe("WallpaperMenu", () => {
     expect(screen.queryByText("None")).not.toBeInTheDocument();
   });
 
+  it("does not highlight None when a wallpaper is already selected", async () => {
+    window.localStorage.setItem("bookmark-manager:wallpaper", "nature/forest.jpg");
+    const user = userEvent.setup();
+    render(<WallpaperMenu />);
+
+    await user.click(screen.getByRole("button", { name: "Theme" }));
+
+    expect(screen.getByText("None").classList.contains("bg-[var(--accent)]")).toBe(false);
+  });
+
   it("drills into a category and shows its wallpaper thumbnails", async () => {
     const user = userEvent.setup();
     render(<WallpaperMenu />);
@@ -93,6 +103,22 @@ describe("WallpaperMenu", () => {
 
     expect(window.localStorage.getItem("bookmark-manager:wallpaper")).toBe("nature/forest.jpg");
     expect(screen.queryByText("← Back")).not.toBeInTheDocument();
+  });
+
+  it("highlights only the currently selected wallpaper thumbnail", async () => {
+    window.localStorage.setItem("bookmark-manager:wallpaper", "nature/forest.jpg");
+    const user = userEvent.setup();
+    const { container } = render(<WallpaperMenu />);
+
+    await user.click(screen.getByRole("button", { name: "Theme" }));
+    await waitFor(() => screen.getByText("Nature"));
+    await user.click(screen.getByText("Nature"));
+
+    const selected = container.querySelector('img[src="/wallpapers/nature/forest.jpg"]')!.closest("button")!;
+    const other = container.querySelector('img[src="/wallpapers/nature/beach.jpg"]')!.closest("button")!;
+
+    expect(selected.className).toContain("border-[var(--accent)]");
+    expect(other.className).toContain("border-transparent");
   });
 
   it("closes the menu and resets category when clicking outside", async () => {

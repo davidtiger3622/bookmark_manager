@@ -132,6 +132,16 @@ describe("applyAppearance", () => {
     await applyAppearance();
     expect(fetchMock).toHaveBeenCalledTimes(1);
   });
+
+  it("falls back to an empty manifest when the wallpaper fetch fails", async () => {
+    vi.resetModules();
+    window.localStorage.setItem("bookmark-manager:theme", "light");
+    window.localStorage.setItem("bookmark-manager:wallpaper", "nature/forest.jpg");
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("network error")));
+    const { applyAppearance } = await import("./appearance");
+    await expect(applyAppearance()).resolves.not.toThrow();
+    expect(document.body.style.backgroundImage).toBe("");
+  });
 });
 
 describe("setStoredTheme / setStoredWallpaper", () => {
