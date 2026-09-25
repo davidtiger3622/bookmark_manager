@@ -37,7 +37,7 @@ export default function WallpaperMenu() {
 
   return (
     <div className="relative" ref={containerRef}>
-      <button onClick={() => setOpen((o) => !o)} className="rounded-full border border-[var(--text)] bg-[var(--bg)] px-5 py-2 text-sm font-bold text-[var(--text)]">
+      <button onClick={() => setOpen((o) => !o)} className="rounded-full border border-[var(--text)] bg-transparent px-5 py-2 text-sm font-bold text-[var(--text)]">
         Theme
       </button>
       {open && (
