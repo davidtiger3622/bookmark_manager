@@ -177,4 +177,15 @@ describe("subscribeAppearance", () => {
     setStoredWallpaper("cars/car1.jpg");
     expect(listener).toHaveBeenCalledTimes(1);
   });
+
+  it("calling the same unsubscribe function twice does not throw and only removes it once", async () => {
+    vi.resetModules();
+    const { subscribeAppearance, setStoredTheme } = await import("./appearance");
+    const listener = vi.fn();
+    const unsubscribe = subscribeAppearance(listener);
+    unsubscribe();
+    expect(() => unsubscribe()).not.toThrow();
+    setStoredTheme("light");
+    expect(listener).not.toHaveBeenCalled();
+  });
 });

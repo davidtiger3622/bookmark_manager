@@ -3,6 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { AnchorHTMLAttributes, ImgHTMLAttributes, ReactNode } from "react";
 import BookmarksPage from "./page";
+import { resetWallpaperManifestCache } from "@/lib/appearance";
 import type { Bookmark } from "@/lib/storage";
 
 vi.mock("next/image", () => ({
@@ -43,6 +44,7 @@ function makeStoredBookmark(overrides: Partial<Bookmark> = {}): Bookmark {
 describe("BookmarksPage", () => {
   beforeEach(() => {
     window.localStorage.clear();
+    resetWallpaperManifestCache();
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ json: async () => ({}) }));
   });
 
@@ -178,5 +180,35 @@ describe("BookmarksPage", () => {
         container.textContent!.indexOf("Alpha")
       );
     });
+  });
+
+  it("applies the wallpaper background when theme is light and the wallpaper is in the manifest", async () => {
+    window.localStorage.setItem("bookmark-manager:theme", "light");
+    window.localStorage.setItem("bookmark-manager:wallpaper", "nature/forest.jpg");
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({ json: async () => ({ nature: ["forest.jpg"] }) })
+    );
+
+    const { container } = render(<BookmarksPage />);
+
+    await waitFor(() => {
+      const wrapper = container.firstChild as HTMLElement;
+      expect(wrapper.style.backgroundImage).toContain("/wallpapers/nature/forest.jpg");
+    });
+  });
+
+  it("has no wallpaper background when theme is dark", async () => {
+    window.localStorage.setItem("bookmark-manager:theme", "dark");
+    window.localStorage.setItem("bookmark-manager:wallpaper", "nature/forest.jpg");
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({ json: async () => ({ nature: ["forest.jpg"] }) })
+    );
+
+    const { container } = render(<BookmarksPage />);
+
+    const wrapper = container.firstChild as HTMLElement;
+    expect(wrapper.style.backgroundImage).toBe("");
   });
 });

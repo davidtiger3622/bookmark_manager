@@ -20,6 +20,10 @@ function notify() {
   listeners.forEach((listener) => listener());
 }
 
+export function resetWallpaperManifestCache() {
+  manifestCache = null;
+}
+
 export async function loadManifest(): Promise<WallpaperManifest> {
   if (manifestCache) return manifestCache;
   try {
