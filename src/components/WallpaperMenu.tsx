@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { loadManifest, getWallpaper, setStoredWallpaper, categoryLabel, WallpaperManifest } from "@/lib/appearance";
 
@@ -63,8 +64,8 @@ export default function WallpaperMenu() {
                   const id = `${activeCategory}/${filename}`;
                   const url = `/wallpapers/${activeCategory}/${filename}`;
                   return (
-                    <button key={id} onClick={() => choose(id)} className={`overflow-hidden rounded-lg border-2 ${wallpaper === id ? "border-[var(--accent)]" : "border-transparent"}`}>
-                      <img src={url} alt="" className="h-24 w-full object-cover" />
+                    <button key={id} onClick={() => choose(id)} className={`relative h-24 overflow-hidden rounded-lg border-2 ${wallpaper === id ? "border-[var(--accent)]" : "border-transparent"}`}>
+                      <Image src={url} alt="" fill sizes="140px" className="object-cover" />
                     </button>
                   );
                 })}
