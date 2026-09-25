@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Bookmark, getBookmarks, addBookmark, toggleFavorite } from "@/lib/storage";
+import { Bookmark, getBookmarks, addBookmark, deleteBookmark, toggleFavorite, updateBookmark } from "@/lib/storage";
 import { normalizeUrl } from "@/lib/favicon";
 import SearchBar from "@/components/SearchBar";
 import SortMenu, { SortOption } from "@/components/SortMenu";
@@ -17,6 +17,7 @@ export default function BookmarksPage() {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortOption>("date");
   const [showModal, setShowModal] = useState(false);
+  const [editingBookmark, setEditingBookmark] = useState<Bookmark | null>(null);
 
   useEffect(() => {
     setBookmarks(getBookmarks());
@@ -26,8 +27,31 @@ export default function BookmarksPage() {
     setBookmarks(addBookmark(name, normalizeUrl(url)));
   }
 
+  function handleEdit(id: string, name: string, url: string) {
+    setBookmarks(updateBookmark(id, name, normalizeUrl(url)));
+  }
+
+  function handleDelete(id: string) {
+    setBookmarks(deleteBookmark(id));
+  }
+
   function handleToggleFavorite(id: string) {
     setBookmarks(toggleFavorite(id));
+  }
+
+  function openAddModal() {
+    setEditingBookmark(null);
+    setShowModal(true);
+  }
+
+  function openEditModal(bookmark: Bookmark) {
+    setEditingBookmark(bookmark);
+    setShowModal(true);
+  }
+
+  function closeModal() {
+    setShowModal(false);
+    setEditingBookmark(null);
   }
 
   const filtered = useMemo(() => {
@@ -47,7 +71,7 @@ export default function BookmarksPage() {
       <div className="mx-auto flex max-w-xl flex-col items-center rounded-3xl bg-[var(--bg-card)]/85 px-4 py-5 text-center shadow-lg backdrop-blur-md sm:px-6">
         <Link href="/" className="text-xl font-bold text-[var(--text)]">Bookmark Manager</Link>
         <div className="mt-6 flex w-full flex-wrap items-center justify-center gap-3">
-          <AddBookmarkButton onClick={() => setShowModal(true)} />
+          <AddBookmarkButton onClick={openAddModal} />
           <SortMenu value={sort} onChange={setSort} />
           <ThemeToggle />
           <WallpaperMenu />
@@ -59,8 +83,20 @@ export default function BookmarksPage() {
           Wallpapers show in light mode only. Dark mode overrides them.
         </p>
       </div>
-      <BookmarkGrid bookmarks={filtered} onToggleFavorite={handleToggleFavorite} />
-      {showModal && <AddBookmarkModal onAdd={handleAdd} onClose={() => setShowModal(false)} />}
+      <BookmarkGrid
+        bookmarks={filtered}
+        onToggleFavorite={handleToggleFavorite}
+        onDelete={handleDelete}
+        onEdit={openEditModal}
+      />
+      {showModal && (
+        <AddBookmarkModal
+          bookmark={editingBookmark ?? undefined}
+          onAdd={handleAdd}
+          onEdit={handleEdit}
+          onClose={closeModal}
+        />
+      )}
     </main>
   );
 }

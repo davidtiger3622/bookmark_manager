@@ -42,6 +42,14 @@ export function deleteBookmark(id: string): Bookmark[] {
   return updated;
 }
 
+export function updateBookmark(id: string, name: string, url: string): Bookmark[] {
+  const updated = getBookmarks().map((b) =>
+    b.id === id ? { ...b, name, url } : b
+  );
+  saveBookmarks(updated);
+  return updated;
+}
+
 export function toggleFavorite(id: string): Bookmark[] {
   const updated = getBookmarks().map((b) =>
     b.id === id ? { ...b, favorite: !b.favorite } : b
