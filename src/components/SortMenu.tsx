@@ -31,7 +31,7 @@ export default function SortMenu({ value, onChange }: Props) {
 
   return (
     <div className="relative" ref={containerRef}>
-      <button onClick={() => setOpen((o) => !o)} className="rounded-full border border-[var(--text)] bg-transparent px-5 py-2 text-sm font-bold text-[var(--text)]">
+      <button onClick={() => setOpen((o) => !o)} className="whitespace-nowrap rounded-full border border-[var(--text)] bg-transparent px-5 py-2 text-sm font-bold text-[var(--text)]">
         Sort
       </button>
       {open && (

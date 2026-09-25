@@ -43,14 +43,14 @@ export default function BookmarksPage() {
   }, [bookmarks, query, sort]);
 
   return (
-    <main className="w-full px-10 py-10">
-      <div className="mx-auto flex max-w-xl flex-col items-center rounded-3xl bg-[var(--bg-card)]/85 px-6 py-5 text-center shadow-lg backdrop-blur-md">
+    <main className="w-full px-4 py-6 sm:px-10 sm:py-10">
+      <div className="mx-auto flex max-w-xl flex-col items-center rounded-3xl bg-[var(--bg-card)]/85 px-4 py-5 text-center shadow-lg backdrop-blur-md sm:px-6">
         <Link href="/" className="text-xl font-bold text-[var(--text)]">Bookmark Manager</Link>
-        <div className="mt-6 flex w-full items-center justify-center gap-3">
-          <AddBookmarkButton onClick={() => setShowModal(true)} />
-          <div className="max-w-xs flex-1">
+        <div className="mt-6 flex w-full flex-wrap items-center justify-center gap-3">
+          <div className="order-1 basis-full sm:order-none sm:basis-auto sm:max-w-xs sm:flex-1">
             <SearchBar value={query} onChange={setQuery} />
           </div>
+          <AddBookmarkButton onClick={() => setShowModal(true)} />
           <SortMenu value={sort} onChange={setSort} />
           <ThemeToggle />
           <WallpaperMenu />

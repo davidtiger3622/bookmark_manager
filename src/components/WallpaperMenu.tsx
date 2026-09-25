@@ -37,11 +37,11 @@ export default function WallpaperMenu() {
 
   return (
     <div className="relative" ref={containerRef}>
-      <button onClick={() => setOpen((o) => !o)} className="rounded-full border border-[var(--text)] bg-transparent px-5 py-2 text-sm font-bold text-[var(--text)]">
+      <button onClick={() => setOpen((o) => !o)} className="whitespace-nowrap rounded-full border border-[var(--text)] bg-transparent px-5 py-2 text-sm font-bold text-[var(--text)]">
         Theme
       </button>
       {open && (
-        <div className="absolute left-1/2 top-full z-10 mt-2 w-[420px] -translate-x-1/2 rounded-2xl border border-[var(--text)] bg-[var(--bg-card)] p-3">
+        <div className="absolute left-1/2 top-full z-10 mt-2 w-[min(420px,calc(100vw-2rem))] -translate-x-1/2 rounded-2xl border border-[var(--text)] bg-[var(--bg-card)] p-3">
           {activeCategory === null ? (
             <>
               <button onClick={() => choose("none")} className={`block w-full rounded-lg px-3 py-2 text-left text-sm font-bold text-[var(--text)] hover:bg-[var(--accent)] hover:text-[var(--bg)] ${wallpaper === "none" ? "bg-[var(--accent)] text-[var(--bg)]" : ""}`}>

@@ -19,7 +19,7 @@ export default function ThemeToggle() {
   }
 
   return (
-    <button onClick={toggle} className="rounded-full border border-[var(--text)] bg-transparent px-5 py-2 text-sm font-bold text-[var(--text)]">
+    <button onClick={toggle} className="whitespace-nowrap rounded-full border border-[var(--text)] bg-transparent px-5 py-2 text-sm font-bold text-[var(--text)]">
       {theme === "dark" ? "Dark" : "Light"}
     </button>
   );
