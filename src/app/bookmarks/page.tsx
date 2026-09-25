@@ -56,7 +56,7 @@ export default function BookmarksPage() {
           <WallpaperMenu />
         </div>
         <p className="mt-3 text-xs font-bold text-[var(--text-dim)]">
-          Wallpapers show in light mode only — dark mode overrides them.
+          Wallpapers show in light mode only. Dark mode overrides them.
         </p>
       </div>
       <BookmarkGrid bookmarks={filtered} onToggleFavorite={handleToggleFavorite} />
