@@ -11,11 +11,11 @@ export default function Home() {
 
   return (
     <div
-      className="relative flex min-h-screen w-full items-center justify-center px-6"
+      className="relative flex min-h-screen w-full items-center justify-center px-6 sm:justify-start sm:pl-16 lg:pl-24"
       style={{ backgroundImage: "url(/wallpapers/wildlife/bird.jpg)", backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" }}
     >
       <div className="absolute inset-0 bg-black/35" />
-      <div className="relative flex flex-col items-center text-center">
+      <div className="relative flex flex-col items-center text-center sm:items-start sm:text-left">
         <h1 className="text-5xl font-bold tracking-tight text-white [text-shadow:0_2px_10px_rgba(0,0,0,0.9)]">
           Bookmark Manager
         </h1>
