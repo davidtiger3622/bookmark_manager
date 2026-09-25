@@ -38,7 +38,7 @@ export default function BookmarksPage() {
   }, [bookmarks, query, sort]);
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-10">
+    <main className="w-full px-10 py-10">
       <div className="flex items-center justify-between">
         <Link href="/" className="text-sm text-[var(--text-dim)]">&larr; Bookmark Manager</Link>
         <div className="flex items-center gap-4">
@@ -46,7 +46,7 @@ export default function BookmarksPage() {
           <ThemeToggle />
         </div>
       </div>
-      <div className="mt-8">
+      <div className="mt-8 max-w-md">
         <SearchBar value={query} onChange={setQuery} sort={sort} onSortChange={setSort} />
       </div>
       <BookmarkGrid bookmarks={filtered} onToggleFavorite={handleToggleFavorite} />
