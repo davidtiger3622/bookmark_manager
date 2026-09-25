@@ -8,6 +8,7 @@ import SearchBar from "@/components/SearchBar";
 import SortMenu, { SortOption } from "@/components/SortMenu";
 import AddBookmarkButton from "@/components/AddBookmarkButton";
 import ThemeToggle from "@/components/ThemeToggle";
+import WallpaperMenu from "@/components/WallpaperMenu";
 import BookmarkGrid from "@/components/BookmarkGrid";
 import AddBookmarkModal from "@/components/AddBookmarkModal";
 
@@ -52,7 +53,11 @@ export default function BookmarksPage() {
           </div>
           <SortMenu value={sort} onChange={setSort} />
           <ThemeToggle />
+          <WallpaperMenu />
         </div>
+        <p className="mt-3 text-xs font-bold text-[var(--text-dim)]">
+          Wallpapers show in light mode only — dark mode overrides them.
+        </p>
       </div>
       <BookmarkGrid bookmarks={filtered} onToggleFavorite={handleToggleFavorite} />
       {showModal && <AddBookmarkModal onAdd={handleAdd} onClose={() => setShowModal(false)} />}

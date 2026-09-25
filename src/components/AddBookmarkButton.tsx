@@ -6,7 +6,7 @@ type Props = {
 
 export default function AddBookmarkButton({ onClick }: Props) {
   return (
-    <button onClick={onClick} className="rounded-full border border-[var(--text)] bg-[var(--accent)] px-5 py-2 text-sm font-bold text-[var(--bg)]">
+    <button onClick={onClick} className="rounded-full border border-[var(--text)] bg-[var(--bg)] px-5 py-2 text-sm font-bold text-[var(--text)]">
       + Add
     </button>
   );
