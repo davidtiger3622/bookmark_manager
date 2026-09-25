@@ -5,6 +5,20 @@ const THEME_KEY = "bookmark-manager:theme";
 const WALLPAPER_KEY = "bookmark-manager:wallpaper";
 
 let manifestCache: WallpaperManifest | null = null;
+type Listener = () => void;
+const listeners: Listener[] = [];
+
+export function subscribeAppearance(listener: Listener) {
+  listeners.push(listener);
+  return () => {
+    const index = listeners.indexOf(listener);
+    if (index !== -1) listeners.splice(index, 1);
+  };
+}
+
+function notify() {
+  listeners.forEach((listener) => listener());
+}
 
 export async function loadManifest(): Promise<WallpaperManifest> {
   if (manifestCache) return manifestCache;
@@ -26,9 +40,14 @@ export function getTheme(): ThemeMode {
   return window.localStorage.getItem(THEME_KEY) === "light" ? "light" : "dark";
 }
 
+export function applyStoredTheme() {
+  document.documentElement.setAttribute("data-theme", getTheme());
+}
+
 export function setStoredTheme(theme: ThemeMode) {
   window.localStorage.setItem(THEME_KEY, theme);
-  void applyAppearance();
+  document.documentElement.setAttribute("data-theme", theme);
+  notify();
 }
 
 export function getWallpaper(): string {
@@ -38,25 +57,17 @@ export function getWallpaper(): string {
 
 export function setStoredWallpaper(id: string) {
   window.localStorage.setItem(WALLPAPER_KEY, id);
-  void applyAppearance();
+  notify();
 }
 
-export async function applyAppearance() {
+export async function getWallpaperUrl(): Promise<string | null> {
   const theme = getTheme();
   const wallpaperId = getWallpaper();
-  document.documentElement.setAttribute("data-theme", theme);
-
-  if (theme === "light" && wallpaperId !== "none") {
-    const [category, filename] = wallpaperId.split("/");
-    const manifest = await loadManifest();
-    if (manifest[category]?.includes(filename)) {
-      const url = `/wallpapers/${category}/${filename}`;
-      document.body.style.backgroundImage = `url(${url})`;
-      document.body.style.backgroundSize = "cover";
-      document.body.style.backgroundPosition = "center";
-      document.body.style.backgroundAttachment = "fixed";
-      return;
-    }
+  if (theme !== "light" || wallpaperId === "none") return null;
+  const [category, filename] = wallpaperId.split("/");
+  const manifest = await loadManifest();
+  if (manifest[category]?.includes(filename)) {
+    return `/wallpapers/${category}/${filename}`;
   }
-  document.body.style.backgroundImage = "";
+  return null;
 }
