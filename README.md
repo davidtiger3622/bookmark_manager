@@ -4,6 +4,23 @@
 
 A fast, minimal bookmark manager that lives entirely in your browser. Save links, mark favorites, search, sort, switch between dark/light mode, and pick a wallpaper — no account, no backend, no database. Everything is stored in `localStorage`.
 
+## Interface guide
+
+The bookmarks page has a row of pills at the top, each controlling one part of the app:
+
+- **+ Add** — opens a form to save a new bookmark (name + link).
+- **Import** — lets you select a Chrome-exported bookmarks file and add any new links from it (see "Importing your Chrome bookmarks" below).
+- **Sort** — reorders your bookmarks: by date added (newest first), A–Z, or Z–A.
+- **Dark / Light** — toggles the whole app's color scheme. Whatever you pick is remembered the next time you open the app.
+- **Theme** — opens the wallpaper picker. Choose a category (Nature, Ocean, Cars, Wildlife) on the left, then pick one of its thumbnails to set it as your background, or choose **None** to go back to a plain background. Wallpapers only show while in **Light** mode — switching to Dark always overrides them with a solid dark background, though your wallpaper choice is remembered and reapplies the next time you're in Light mode.
+- **Search bar** — filters your bookmarks live by name or URL as you type.
+
+On each individual bookmark, hovering reveals three small icons:
+
+- **Heart** — marks it as a favorite, which pins it to a dedicated Favorites section at the top of the grid.
+- **Pencil** — lets you edit its name or link.
+- **Trash** — deletes it, after a confirmation prompt.
+
 ## What this is (and isn't)
 
 This is **not** a replacement for Chrome's (or any browser's) built-in bookmark manager, and it isn't trying to be — at least not at this stage of development. Keep saving your everyday bookmarks the normal way, directly in your browser.
@@ -18,6 +35,19 @@ Good candidates for tracking here:
 - Anything time-sensitive you don't want to lose track of
 
 You don't have to choose one or the other — plenty of people save the same link in both places: normally in Chrome for permanent safekeeping, and here for a focused, uncluttered view of what needs attention this week. Since this is still an early-stage project (no sync, no account, no cloud backup), treating your browser's bookmarks as the source of truth and this app as a lightweight "currently tracking" view is the safest way to use both together.
+
+## Adding a bookmark
+
+1. Open the app and go to **Open your bookmarks** from the home page
+2. Click the **+ Add** pill
+3. Enter a **Name** (whatever you'll recognize it by) and the **Link** (the full URL — if you leave off `https://`, it's added automatically)
+4. Click **Save**
+
+Your new bookmark appears in the grid immediately, with its site icon fetched automatically. From there you can:
+
+- Click the bookmark's icon or name to open it in a new tab
+- Hover over it to reveal the **heart** (favorite), **pencil** (edit), and **trash** (delete) icons
+- Use **Search** to filter by name or URL, or **Sort** to reorder by date added, A–Z, or Z–A
 
 ## Importing your Chrome bookmarks
 
