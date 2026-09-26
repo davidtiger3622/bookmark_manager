@@ -87,9 +87,6 @@ export default function BookmarksPage() {
           <div className="mt-3 w-full max-w-xs">
             <SearchBar value={query} onChange={setQuery} />
           </div>
-          <p className="mt-3 text-xs font-bold text-[var(--text-dim)]">
-            Wallpapers show in light mode only. Dark mode overrides them.
-          </p>
         </div>
         <BookmarkGrid bookmarks={filtered} onToggleFavorite={handleToggleFavorite} onDelete={handleDelete} onEdit={handleEditClick} />
         {showModal && <AddBookmarkModal bookmark={editingBookmark} onAdd={handleAdd} onEdit={handleEditSave} onClose={closeModal} />}
