@@ -85,7 +85,7 @@ export default function BookmarksPage() {
       style={wallpaperUrl ? { backgroundImage: `url(${wallpaperUrl})`, backgroundSize: "cover", backgroundPosition: "center", backgroundAttachment: "fixed" } : undefined}
     >
       <main className="w-full px-4 py-6 sm:px-10 sm:py-10">
-        <div className="mx-auto flex max-w-xl flex-col items-center rounded-3xl bg-[var(--bg-card)]/85 px-4 py-5 text-center shadow-lg backdrop-blur-md sm:px-6">
+        <div className="relative z-20 mx-auto flex max-w-xl flex-col items-center rounded-3xl bg-[var(--bg-card)]/85 px-4 py-5 text-center shadow-lg backdrop-blur-md sm:px-6">
           <Link href="/" className="text-xl font-bold text-[var(--text)]">Bookmark Manager</Link>
           <div className="mt-6 flex w-full flex-wrap items-center justify-center gap-3">
             <AddBookmarkButton onClick={() => setShowModal(true)} />

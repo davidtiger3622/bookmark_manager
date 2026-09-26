@@ -65,29 +65,41 @@ describe("WallpaperMenu", () => {
     expect(screen.getByText("None").classList.contains("bg-[var(--accent)]")).toBe(false);
   });
 
-  it("drills into a category and shows its wallpaper thumbnails", async () => {
+  it("shows a prompt to pick a category before any category is selected", async () => {
     const user = userEvent.setup();
     render(<WallpaperMenu />);
 
     await user.click(screen.getByRole("button", { name: "Theme" }));
     await waitFor(() => screen.getByText("Nature"));
-    await user.click(screen.getByText("Nature"));
 
-    expect(screen.getByText("← Back")).toBeInTheDocument();
-    expect(screen.queryByText("Ocean")).not.toBeInTheDocument();
+    expect(screen.getByText("Pick a category to see wallpapers.")).toBeInTheDocument();
   });
 
-  it("goes back to the category list when Back is clicked", async () => {
+  it("clicking a category shows its thumbnails while keeping the category list visible", async () => {
     const user = userEvent.setup();
     render(<WallpaperMenu />);
 
     await user.click(screen.getByRole("button", { name: "Theme" }));
     await waitFor(() => screen.getByText("Nature"));
     await user.click(screen.getByText("Nature"));
-    await user.click(screen.getByText("← Back"));
 
     expect(screen.getByText("Nature")).toBeInTheDocument();
     expect(screen.getByText("Ocean")).toBeInTheDocument();
+    expect(screen.queryByText("Pick a category to see wallpapers.")).not.toBeInTheDocument();
+  });
+
+  it("switching categories replaces the thumbnails shown", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<WallpaperMenu />);
+
+    await user.click(screen.getByRole("button", { name: "Theme" }));
+    await waitFor(() => screen.getByText("Nature"));
+    await user.click(screen.getByText("Nature"));
+    expect(container.querySelector('img[src="/wallpapers/nature/forest.jpg"]')).toBeInTheDocument();
+
+    await user.click(screen.getByText("Ocean"));
+    expect(container.querySelector('img[src="/wallpapers/ocean/wave.jpg"]')).toBeInTheDocument();
+    expect(container.querySelector('img[src="/wallpapers/nature/forest.jpg"]')).not.toBeInTheDocument();
   });
 
   it("chooses a wallpaper, persists it, and closes the menu", async () => {
@@ -102,7 +114,7 @@ describe("WallpaperMenu", () => {
     await user.click(thumbnail);
 
     expect(window.localStorage.getItem("bookmark-manager:wallpaper")).toBe("nature/forest.jpg");
-    expect(screen.queryByText("← Back")).not.toBeInTheDocument();
+    expect(screen.queryByText("None")).not.toBeInTheDocument();
   });
 
   it("highlights only the currently selected wallpaper thumbnail", async () => {
@@ -136,7 +148,7 @@ describe("WallpaperMenu", () => {
 
     await user.click(screen.getByTestId("outside"));
 
-    expect(screen.queryByText("← Back")).not.toBeInTheDocument();
     expect(screen.queryByText("None")).not.toBeInTheDocument();
+    expect(screen.queryByText("Pick a category to see wallpapers.")).not.toBeInTheDocument();
   });
 });

@@ -41,23 +41,25 @@ export default function WallpaperMenu() {
         Theme
       </button>
       {open && (
-        <div className="absolute left-1/2 top-full z-10 mt-2 w-[min(420px,calc(100vw-2rem))] -translate-x-1/2 rounded-2xl border border-[var(--text)] bg-[var(--bg-card)] p-3">
-          {activeCategory === null ? (
-            <>
-              <button onClick={() => choose("none")} className={`block w-full rounded-lg px-3 py-2 text-left text-sm font-bold text-[var(--text)] hover:bg-[var(--accent)] hover:text-[var(--bg)] ${wallpaper === "none" ? "bg-[var(--accent)] text-[var(--bg)]" : ""}`}>
-                None
+        <div className="absolute left-1/2 top-full z-10 mt-2 flex w-[min(560px,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-2xl border border-[var(--text)] bg-[var(--bg-card)]">
+          <div className="w-36 shrink-0 border-r border-[var(--text)]/30 p-2">
+            <button onClick={() => choose("none")} className={`block w-full rounded-lg px-3 py-2 text-left text-sm font-bold text-[var(--text)] hover:bg-[var(--accent)] hover:text-[var(--bg)] ${wallpaper === "none" ? "bg-[var(--accent)] text-[var(--bg)]" : ""}`}>
+              None
+            </button>
+            {categories.map((key) => (
+              <button
+                key={key}
+                onClick={() => setActiveCategory(key)}
+                className={`block w-full rounded-lg px-3 py-2 text-left text-sm font-bold text-[var(--text)] hover:bg-[var(--accent)] hover:text-[var(--bg)] ${activeCategory === key ? "bg-[var(--accent)]/20" : ""}`}
+              >
+                {categoryLabel(key)}
               </button>
-              {categories.map((key) => (
-                <button key={key} onClick={() => setActiveCategory(key)} className="block w-full rounded-lg px-3 py-2 text-left text-sm font-bold text-[var(--text)] hover:bg-[var(--accent)] hover:text-[var(--bg)]">
-                  {categoryLabel(key)}
-                </button>
-              ))}
-            </>
-          ) : (
-            <>
-              <button onClick={() => setActiveCategory(null)} className="mb-3 block w-full rounded-lg px-3 py-2 text-left text-sm font-bold text-[var(--text)] hover:bg-[var(--accent)] hover:text-[var(--bg)]">
-                &larr; Back
-              </button>
+            ))}
+          </div>
+          <div className="flex-1 p-3">
+            {activeCategory === null ? (
+              <p className="p-3 text-sm font-bold text-[var(--text-dim)]">Pick a category to see wallpapers.</p>
+            ) : (
               <div className="grid max-h-96 grid-cols-3 gap-3 overflow-y-auto">
                 {manifest[activeCategory]?.map((filename) => {
                   const id = `${activeCategory}/${filename}`;
@@ -69,8 +71,8 @@ export default function WallpaperMenu() {
                   );
                 })}
               </div>
-            </>
-          )}
+            )}
+          </div>
         </div>
       )}
     </div>
