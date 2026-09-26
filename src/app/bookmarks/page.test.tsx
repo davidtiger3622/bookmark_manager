@@ -41,6 +41,10 @@ function makeStoredBookmark(overrides: Partial<Bookmark> = {}): Bookmark {
   };
 }
 
+function makeBookmarksFile(html: string) {
+  return new File([html], "bookmarks.html", { type: "text/html" });
+}
+
 describe("BookmarksPage", () => {
   beforeEach(() => {
     window.localStorage.clear();
@@ -147,7 +151,6 @@ describe("BookmarksPage", () => {
     const { container } = render(<BookmarksPage />);
 
     await screen.findByText("Zeta");
-    // default sort is by date added (newest first)
     expect(container.textContent!.indexOf("Zeta")).toBeLessThan(
       container.textContent!.indexOf("Alpha")
     );
@@ -210,5 +213,22 @@ describe("BookmarksPage", () => {
 
     const wrapper = container.firstChild as HTMLElement;
     expect(wrapper.style.backgroundImage).toBe("");
+  });
+
+  it("imports new bookmarks from an uploaded file, skipping duplicates", async () => {
+    seedBookmarks([makeStoredBookmark({ id: "1", name: "Old", url: "https://old.com" })]);
+    const user = userEvent.setup();
+    render(<BookmarksPage />);
+
+    const input = screen.getByTestId("import-file-input") as HTMLInputElement;
+    const file = makeBookmarksFile(
+      `<a href="https://old.com">Old</a><a href="https://new.com">New Site</a>`
+    );
+    await user.upload(input, file);
+
+    expect(await screen.findByText("New Site")).toBeInTheDocument();
+    const stored = JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "[]");
+    expect(stored).toHaveLength(2);
+    expect(stored.some((b: Bookmark) => b.url === "https://new.com")).toBe(true);
   });
 });

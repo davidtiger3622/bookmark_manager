@@ -8,6 +8,7 @@ import { applyStoredTheme, getWallpaperUrl, subscribeAppearance } from "@/lib/ap
 import SearchBar from "@/components/SearchBar";
 import SortMenu, { SortOption } from "@/components/SortMenu";
 import AddBookmarkButton from "@/components/AddBookmarkButton";
+import ImportBookmarksButton from "@/components/ImportBookmarksButton";
 import ThemeToggle from "@/components/ThemeToggle";
 import WallpaperMenu from "@/components/WallpaperMenu";
 import BookmarkGrid from "@/components/BookmarkGrid";
@@ -34,6 +35,14 @@ export default function BookmarksPage() {
 
   function handleAdd(name: string, url: string) {
     setBookmarks(addBookmark(name, normalizeUrl(url)));
+  }
+
+  function handleImport(newOnes: { name: string; url: string }[]) {
+    let updated = getBookmarks();
+    for (const b of newOnes) {
+      updated = addBookmark(b.name, normalizeUrl(b.url));
+    }
+    setBookmarks(updated);
   }
 
   function handleEditSave(id: string, name: string, url: string) {
@@ -80,6 +89,7 @@ export default function BookmarksPage() {
           <Link href="/" className="text-xl font-bold text-[var(--text)]">Bookmark Manager</Link>
           <div className="mt-6 flex w-full flex-wrap items-center justify-center gap-3">
             <AddBookmarkButton onClick={() => setShowModal(true)} />
+            <ImportBookmarksButton existingUrls={bookmarks.map((b) => b.url)} onImport={handleImport} />
             <SortMenu value={sort} onChange={setSort} />
             <ThemeToggle />
             <WallpaperMenu />
